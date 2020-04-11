@@ -11,6 +11,7 @@ Created on Tue Mar 24 21:20:05 2020
 @author: jakes
 """
 
+import seaborn as sns
 import pandas as pd
 
 stats = pd.read_csv('Season_Stats.csv')
@@ -123,3 +124,39 @@ for i in cols:
     print(i)
     print(stats[i].unique())
 
+    
+# there are no null values which is excellent
+stats.isnull().sum()
+
+# quick look at sumary stats for numeric cols
+stats.describe()
+
+# quick look at summary stats for categorical cols
+stats.describe(include=['O'])
+
+# create a copy of the all stars column but encode values with 1 or 0
+stats['AllStarEncoded'] = stats['ALL_STAR'].replace({'No':0,'Yes':1})
+
+# look at ALL the all star players and the number of all star appearances they have
+# this only looks at players that have actually been an all star
+# we can say = 0 in line 2 to make it only players who have not been in the game
+allStars = stats[['Player','AllStarEncoded']].groupby('Player').sum().sort_values(by='AllStarEncoded', ascending = False).reset_index()
+allStars = allStars[allStarGames['AllStarEncoded'] > 0]
+allStars.head()
+
+# looking at the distribution of the number of times a player appears in a game
+# mostly people are only in one game and the numbers really fall off after 4 games
+# lebron has most
+sns.countplot(x = 'AllStarEncoded', data=allStars)
+
+# this will give us the 10 features most correlated with all star status
+# i am doing head on the top 11 but ignoring the first row because
+# the first row is just all star status, which is 100% correlated with itself
+statsCorr = stats.corr()
+statsCorr = statsCorr[['AllStarEncoded']]
+statsCorr['AllStarEncoded'].sort_values(ascending=False).head(11)[1:]
+
+# again looking visually at features that are nicely correlated with all star status
+sns.heatmap(data = statsCorr)
+
+    
