@@ -12,6 +12,7 @@ Created on Tue Mar 24 21:20:05 2020
 """
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 stats = pd.read_csv('Season_Stats.csv')
 
@@ -114,12 +115,95 @@ finalTeams.to_csv('Final_Season_Stats.csv')
 
 
 # # EDA/ QA
+#code for indexing using rows: df.loc[]
 
-# In[ ]:
+#Define function to accept a df and value as arguement and return a list of index positions of all occurences
+def getIndexes(dfObj, value):
+
+    listOfPos = list()
+
+    result = dfObj.isin([value])
+
+    seriesObj = result.any()
+    columnNames = list(seriesObj[seriesObj == True].index)
+
+    for col in columnNames:
+        rows = list(result[col][result[col] == True].index)
+        for row in rows:
+            listOfPos.append((row, col))
+
+    return listOfPos
+
+topOBPM = getIndexes(finalTeams, 47.8)
+topWS = getIndexes(finalTeams, 20.3)
+topeFG = getIndexes(finalTeams, 1.50000)
+for i in range(len(topeFG)):
+    print(i, topeFG[i])
+    
+# remove players where games < 10
+
+teamsFiltered = finalTeams[finalTeams['G'] >= 10]
+
+#remove players where minutes played <= 50
+
+teamsFiltered = teamsFiltered[teamsFiltered['MP'] > 50]
+
+teamsFiltered.describe() 
+
+#create scatterplot for points scored and field goal %
+plt.scatter(teamsFiltered['PTS'], teamsFiltered['FG%'])
+plt.axhline(y=0.5, color='black')
+plt.title('Field Goal Percentage vs Points Scored')
+
+#create plot of All-star status and points scored
+plt.scatter(teamsFiltered['PTS'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs Points Scored')
+
+#all-star vs age
+plt.scatter(teamsFiltered['Age'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs Age')
+
+#all-star vs obpm
+plt.scatter(teamsFiltered['OBPM'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs OBPM')
+
+#all-star vs games
+plt.scatter(teamsFiltered['G'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs Games Played')
+
+#all-star vs TOV
+plt.scatter(teamsFiltered['TOV'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs Turnovers')
+
+#all-star vs WS
+plt.scatter(teamsFiltered['WS/48'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs Win Share')
+
+#all-star vs BPM
+plt.scatter(teamsFiltered['BPM'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs BPM')
+
+#all-star vs PER
+plt.scatter(teamsFiltered['PER'], teamsFiltered['ALL_STAR'])
+plt.title('All-Star Status vs Player Efficiency Rating')
+
+#remove players where minutes played < 200
+teamsFiltered2 = teamsFiltered[teamsFiltered['MP'] >= 200]
+
+#running previous charts on MP >= 200 df  (only %based charts effected)
+#all-star vs obpm
+plt.scatter(teamsFiltered2['OBPM'], teamsFiltered2['ALL_STAR'])
+plt.title('All-Star Status vs OBPM')
+plt.text(-5, 0.5, 'Minimum 200 minutes played')
 
 
-cols = stats.columns
-for i in cols:
-    print(i)
-    print(stats[i].unique())
+#all-star vs BPM
+plt.scatter(teamsFiltered2['BPM'], teamsFiltered2['ALL_STAR'])
+plt.title('All-Star Status vs BPM')
+plt.text(-5, 0.5, 'Minimum 200 minutes played')
+
+#all-star vs PER
+plt.scatter(teamsFiltered2['PER'], teamsFiltered2['ALL_STAR'])
+plt.title('All-Star Status vs Player Efficiency Rating')
+plt.text(10, 0.5, 'Minimum 200 minutes played')
 
