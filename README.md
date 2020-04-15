@@ -28,4 +28,4 @@ Is a: Statistical modeling software
 That: Assists personnel in identifying the top players available in free agency 
 Unlike: Basing free agency acquisition off of points scored and other game statistics 
 Our product: Utilizes advanced analytics techniques to identify key performance indicators of success 
-Caveats: The primary differentiation of our product and traditional scouting is that our product uses a standardized and objective process of identifying high-performing players
+Caveats: The primary differentiation of our product and traditional scouting is that our product uses a standardized and objective process of identifying high-performing players.
