@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Created on Fri Apr 17 18:54:09 2020
@@ -18,12 +19,12 @@ from sklearn.metrics           import accuracy_score, mean_squared_error, confus
 from sklearn.linear_model      import LogisticRegression
 from sklearn.ensemble          import RandomForestClassifier, AdaBoostClassifier, BaggingClassifier
 from sklearn.preprocessing     import StandardScaler
-    
+
 
 stats = pd.read_csv('Season_Stats.csv')
 
 # only grabbing years 2007-2018 (train on 2007-2017, test on 2018)
-stats = stats[stats['Year'] > 2005].reset_index(drop=True) 
+stats = stats[stats['Year'] > 2005].reset_index(drop=True)
 
 # dropping these two columns which are both entirely blank
 stats = stats.drop(columns = ['blanl','blank2','Unnamed: 0'])
@@ -154,7 +155,7 @@ teamsFiltered = finalTeams[finalTeams['G'] >= 10]
 
 #remove outliers by removing players where minutes played <= 50
 teamsFiltered = teamsFiltered[teamsFiltered['MP'] > 50]
-teamsFiltered.describe() 
+teamsFiltered.describe()
 
 #plot different variables to better understand data
 #create scatterplot for points scored and field goal %
@@ -256,7 +257,7 @@ rfecv.fit(x_scaled_df, y)
 print("Optimal number of features: %d" % rfecv.n_features_)
 print('Selected features: %s' % list(x_scaled_df.columns[rfecv.support_]))
 
-#plot the number of features vs. cross-validation scores 
+#plot the number of features vs. cross-validation scores
 plt.figure(figsize=(10,6))
 plt.xlabel("Number of features selected")
 plt.ylabel("Cross validation score (nb of correct classifications)")
@@ -365,8 +366,8 @@ print(rf_gs.best_params_)
 
 
 
-rf_best = RandomForestClassifier(max_depth= None, 
-                                 min_samples_leaf= 1, 
+rf_best = RandomForestClassifier(max_depth= None,
+                                 min_samples_leaf= 1,
                                  min_samples_split= 5,
                                  n_estimators= 50,
                                  random_state= 42)
