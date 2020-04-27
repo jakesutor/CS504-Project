@@ -23,7 +23,7 @@ from sklearn.preprocessing     import StandardScaler
 
 stats = pd.read_csv('Season_Stats.csv')
 
-# only grabbing years 2007-2018 (train on 2007-2017, test on 2018)
+# only grabbing years 2006-2017 (train on 2007-2016, test on 2017)
 stats = stats[stats['Year'] > 2005].reset_index(drop=True)
 
 # dropping these two columns which are both entirely blank
@@ -109,7 +109,7 @@ finalTeams = finalTeams.astype({'Year': 'int64', 'ALL_STAR':'bool','Age': 'int64
 finalTeams.dtypes
 # Confirm that there are no negative values
 finalTeams.describe()
-finalTeams[(finalTeams.ix[:,5:47] < 0).all(1)]
+
 
 # In[22]:
 
@@ -264,6 +264,7 @@ plt.ylabel("Cross validation score (nb of correct classifications)")
 plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
 plt.show()
 
+
 #modify data to include only the optimal features
 selected_features = list(x_scaled_df.columns[rfecv.support_])
 x_scaled_filtered = x_scaled_df[selected_features]
@@ -291,6 +292,19 @@ conf_matrix = confusion_matrix(y_test, y_pred)
 print(conf_matrix)
 print(classification_report(y_test, y_pred))
 
+#confusion matrix chart
+group_names = ['True Neg','False Pos','False Neg', 'True Pos']
+group_precisions = ['Precision = 0.98', '', '', 'Precision = 0.82']
+group_counts = ["{0:0.0f}".format(value) for value in
+                conf_matrix.flatten()]
+group_percentages = ["{0:.2%}".format(value) for value in
+                     conf_matrix.flatten()/np.sum(conf_matrix)]
+labels = [f"{v1}\n{v2}\n{v3}\n{v4}" for v1, v2, v3, v4 in
+          zip(group_names,group_counts,group_percentages, group_precisions)]
+labels = np.asarray(labels).reshape(2,2)
+sns.axes_style("dark")
+sns.heatmap(conf_matrix, annot=labels, fmt='', linewidths=0.9, cmap='Blues', linecolor="dimgray", annot_kws={"size":12},
+            robust=True)
 
 #Testing Logistic Regression
 model_res.predict(x_train)
@@ -304,12 +318,17 @@ x_test['ALL_STAR'] = y_test
 
 # Combine the training and testing data sets
 train_df = pd.concat([x_train, x_test])
+
+
 train_df['ALL_STAR_PROB'] = np.round(train_df['ALL_STAR_PROB'], 2)
 
 train_df['player_index'] = train_df.index
+
 train_df[['Player','Year']] = train_df['player_index'].str.split(': ', expand = True)
+
 train_df.drop(columns = ['player_index'], inplace = True)
 
+train_df.to_csv('Probability_DF_All_Star.csv')
 # Players most likely to become an All-Star from training set
 train_df.sort_values(by = 'ALL_STAR_PROB', ascending = False).head(10)
 
