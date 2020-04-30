@@ -157,43 +157,19 @@ teamsFiltered = finalTeams[finalTeams['G'] >= 10]
 teamsFiltered = teamsFiltered[teamsFiltered['MP'] > 50]
 teamsFiltered.describe()
 
-#plot different variables to better understand data
-#create scatterplot for points scored and field goal %
-plt.scatter(teamsFiltered['PTS'], teamsFiltered['FG%'])
-plt.axhline(y=0.5, color='black')
-plt.title('Field Goal Percentage vs Points Scored')
+#Age vs PER jointplot
+sns.jointplot(x='topWS', y='ALL_STAR', data='teamsFiltered2')
 
-#create plot of All-star status and points scored
-plt.scatter(teamsFiltered['PTS'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs Points Scored')
 
-#all-star vs age
-plt.scatter(teamsFiltered['Age'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs Age')
+plt.figure(figsize=(30,5))
+sns.pairplot(teamsFiltered2, vars = ["PER", "PTS"], hue="ALL_STAR", kind='scatter', markers=["o", "p"])
 
-#all-star vs obpm
-plt.scatter(teamsFiltered['OBPM'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs OBPM')
+sns.pairplot(teamsFiltered2, vars = ["PER", "PTS"], hue="Age")
 
-#all-star vs games
-plt.scatter(teamsFiltered['G'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs Games Played')
+sns.pairplot(teamsFiltered2, vars = ["Age"], hue="ALL_STAR")
 
-#all-star vs TOV
-plt.scatter(teamsFiltered['TOV'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs Turnovers')
+sns.pairplot(best_features, vars = ["Age"], hue="ALL_STAR")
 
-#all-star vs WS
-plt.scatter(teamsFiltered['WS/48'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs Win Share')
-
-#all-star vs BPM
-plt.scatter(teamsFiltered['BPM'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs BPM')
-
-#all-star vs PER
-plt.scatter(teamsFiltered['PER'], teamsFiltered['ALL_STAR'])
-plt.title('All-Star Status vs Player Efficiency Rating')
 
 
 #further remove outliers by removing players where minutes played < 200
@@ -248,7 +224,7 @@ x_scaled_df.shape
 #### LOGISTIC REGRESSION ####
 #create an instance of the Logistic regression function, and set max iterations to 200
 #to allow for the model to converge
-logreg=LogisticRegression(max_iter=200)
+logreg = LogisticRegression(max_iter=200)
 
 # Create the RFECV object in order to determine the variables to keep based on accuracy
 rfecv = RFECV(estimator=logreg, step=1, scoring='accuracy')
@@ -418,6 +394,11 @@ test_df.sort_values(by = 'ALL_STAR_PROB', ascending = False).head(10)
 
 
 
-best_features = pd.DataFrame(rf_best.feature_importances_.reshape(1,19), columns = selected_features).T
+best_features = pd.DataFrame(rf_best.feature_importances_.reshape(1,32), columns = selected_features).T
 best_features.rename(columns = {0: 'feature_importance'}, inplace = True)
 best_features.sort_values(by = 'feature_importance', ascending = False)
+
+
+
+
+
