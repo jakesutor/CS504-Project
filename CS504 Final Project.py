@@ -19,7 +19,7 @@ from sklearn.ensemble          import RandomForestClassifier, AdaBoostClassifier
 from sklearn.preprocessing     import StandardScaler
 
 
-stats = pd.read_csv(r'C:\Users\jakes\Documents\GitHub\CS504-Project\Season_Stats.csv')
+stats = pd.read_csv('Season_Stats.csv')
 
 # only grabbing years 2006-2017 (train on 2007-2016, test on 2017)
 stats = stats[stats['Year'] > 2005].reset_index(drop=True)
@@ -258,8 +258,10 @@ print('Selected features: %s' % list(x.columns[rfecv.support_]))
 
 #plot the number of features vs. cross-validation scores
 plt.figure(figsize=(10,6))
+plt.title('RFECV Analysis')
 plt.xlabel("Number of features selected")
 plt.ylabel("Cross validation score (nb of correct classifications)")
+plt.axvline(x=9, color='black')
 plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
 plt.show()
 
@@ -369,9 +371,11 @@ best_features = best_features.sort_values(by = 'feature_importance', ascending =
 
 # Top Features
 plt.figure(figsize=(15,10))
-plt.bar(best_features.index,best_features.feature_importance)
+plt.bar(best_features.index,(best_features.feature_importance)*100)
 plt.title('Feature Importance', fontsize=20)
-
+plt.xlabel('Metric')
+plt.ylabel('Relative Importance (%)')
+plt.show()
 
 
 # LOGISTIC REGRESSION
